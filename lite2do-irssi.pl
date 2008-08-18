@@ -17,6 +17,7 @@ use strict;
 use warnings;
 use Irssi;
 use locale;
+use File::Copy;
 use File::Spec::Functions;
 
 # General script information:
@@ -29,16 +30,17 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-08-17',
+  changed     => '2008-08-18',
 );
 
 # General script settings:
 our $HOMEDIR  = Irssi::get_irssi_dir();          # Irssi's  home directory.
-our $SAVEFILE = catfile($HOMEDIR, 'w2do');       # Save file location.
+our $SAVEFILE = catfile($HOMEDIR, 'lite2do');    # Save file location.
+our $BACKEXT  = '.bak';                          # Backup file extension.
 our $TRIGGER  = ':todo';                         # Script invoking command.
 
 # Access control:
-our @ALLOWED  = qw( *!*@* );
+our @ALLOWED  = qw( *!*@* );                     # Allowed IRC masks.
 
 # Load selected data from the save file:
 sub load_selection {
@@ -69,6 +71,8 @@ sub load_selection {
 sub save_data {
   my $data = shift;
 
+  copy($SAVEFILE, "$SAVEFILE$BACKEXT") if (-r $SAVEFILE);
+
   if (open(SAVEFILE, ">$SAVEFILE")) {
     foreach my $line (@$data) {
       print SAVEFILE $line;
@@ -84,6 +88,8 @@ sub save_data {
 # Add given data to the end of the save file:
 sub add_data {
   my $data = shift;
+
+  copy($SAVEFILE, "$SAVEFILE$BACKEXT") if (-r $SAVEFILE);
 
   if (open(SAVEFILE, ">>$SAVEFILE")) {
     foreach my $line (@$data) {
@@ -249,6 +255,7 @@ sub message_public {
     $command = $message;
     $command =~ s/^$TRIGGER\s*//;
 
+    # Parse commands:
     if ($command =~ /^(|list)\s*$/) {
       $response = list_tasks();
     }
