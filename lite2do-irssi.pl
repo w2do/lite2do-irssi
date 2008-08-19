@@ -30,7 +30,7 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-08-18',
+  changed     => '2008-08-19',
 );
 
 # General script settings:
@@ -241,6 +241,45 @@ sub send_message {
   }
 }
 
+# Perform proper action and return its response:
+sub run_command {
+  my $command = shift;
+
+  if ($command =~ /^(|list)\s*$/) {
+    return list_tasks();
+  }
+  elsif ($command =~ /^list\s+@(\S+)\s*(\S.*|)$/) {
+    return list_tasks($1, $2);
+  }
+  elsif ($command =~ /^list\s+(\S.*)$/) {
+    return list_tasks(undef, $1);
+  }
+  elsif ($command =~ /^add\s+@(\S+)\s+(\S.*)/) {
+    return add_task($2, $1);
+  }
+  elsif ($command =~ /^add\s+(\S.*)/) {
+    return add_task($1);
+  }
+  elsif ($command =~ /^change\s+(\d+)\s+(\S.*)/) {
+    return change_task($1, $2);
+  }
+  elsif ($command =~ /^finish\s+(\d+)/) {
+    return finish_task($1);
+  }
+  elsif ($command =~ /^remove\s+(\d+)/) {
+    return remove_task($1);
+  }
+  elsif ($command =~ /^version\s*$/) {
+    return display_version();
+  }
+  elsif ($command =~ /^help\s*$/) {
+    return display_help();
+  }
+  else {
+    return display_usage();
+  }
+}
+
 # Handle incoming public messages:
 sub message_public {
   my ($server,  $message, $nick, $address, $target) = @_;
@@ -255,40 +294,8 @@ sub message_public {
     $command = $message;
     $command =~ s/^$TRIGGER\s*//;
 
-    # Parse commands:
-    if ($command =~ /^(|list)\s*$/) {
-      $response = list_tasks();
-    }
-    elsif ($command =~ /^list\s+@(\S+)\s*(\S.*|)$/) {
-      $response = list_tasks($1, $2);
-    }
-    elsif ($command =~ /^list\s+(\S.*)$/) {
-      $response = list_tasks(undef, $1);
-    }
-    elsif ($command =~ /^add\s+@(\S+)\s+(\S.*)/) {
-      $response = add_task($2, $1);
-    }
-    elsif ($command =~ /^add\s+(\S.*)/) {
-      $response = add_task($1);
-    }
-    elsif ($command =~ /^change\s+(\d+)\s+(\S.*)/) {
-      $response = change_task($1, $2);
-    }
-    elsif ($command =~ /^finish\s+(\d+)/) {
-      $response = finish_task($1);
-    }
-    elsif ($command =~ /^remove\s+(\d+)/) {
-      $response = remove_task($1);
-    }
-    elsif ($command =~ /^version\s*$/) {
-      $response = display_version();
-    }
-    elsif ($command =~ /^help\s*$/) {
-      $response = display_help();
-    }
-    else {
-      $response = display_usage();
-    }
+    # Perform proper action:
+    $response = run_command($command);
   }
   else {
     $response = "Access denied.";
@@ -315,7 +322,21 @@ sub message_own_public {
   message_public($server, $message, $nick, $address, $target);
 }
 
+# Handle /todo command:
+sub cmd_todo {
+  my ($args, $server, $witem) = @_;
+
+  # Strip args:
+  $args =~ s/^\s*//;
+
+  # Perform proper action:
+  Irssi::print(run_command($args));
+}
+
 # Register signals:
 Irssi::signal_add('message public',     'message_public');
 Irssi::signal_add('message private',    'message_private');
 Irssi::signal_add('message own_public', 'message_own_public');
+
+# Register commands:
+Irssi::command_bind('todo', 'cmd_todo');
