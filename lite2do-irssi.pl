@@ -135,11 +135,6 @@ Usage: $TRIGGER command [args...]
 END_HELP
 }
 
-# Display script usage:
-sub display_usage {
-  return "Usage: $TRIGGER command [args...]";
-}
-
 # Display script version:
 sub display_version {
   return $IRSSI{name} . " $VERSION";
@@ -172,7 +167,7 @@ sub add_task {
   my $group = shift || 'general';
   my $id    = choose_id();
 
-  my @data  = ("$group:anytime:3:f:$task:$id\n");
+  my @data  = (substr($group, 0, 10) . ":anytime:3:f:$task:$id\n");
 
   add_data(\@data);
   return "Task has been successfully added.";
@@ -276,7 +271,7 @@ sub run_command {
     return display_help();
   }
   else {
-    return display_usage();
+    return "Usage: $TRIGGER command [args...]"
   }
 }
 
