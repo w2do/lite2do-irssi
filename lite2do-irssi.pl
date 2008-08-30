@@ -21,7 +21,7 @@ use File::Copy;
 use File::Spec::Functions;
 
 # General script information:
-our $VERSION  = '0.1.3';
+our $VERSION  = '0.1.4';
 our %IRSSI    = (
   authors     => 'Jaromir Hradilek',
   contact     => 'jhradilek@gmail.com',
@@ -30,7 +30,7 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-08-30',
+  changed     => '2008-08-31',
 );
 
 # General script settings:
@@ -38,6 +38,7 @@ our $HOMEDIR  = Irssi::get_irssi_dir();          # Irssi's  home directory.
 our $SAVEFILE = catfile($HOMEDIR, 'lite2do');    # Save file location.
 our $BACKEXT  = '.bak';                          # Backup file extension.
 our $TRIGGER  = ':todo';                         # Script invoking command.
+our $COLOURED = 0;                               # Whether to use colours.
 
 # Access control:
 our @ALLOWED  = qw( *!*@* );                     # Allowed IRC masks.
@@ -151,7 +152,17 @@ sub list_tasks {
     foreach my $line (sort @selected) {
       $line   =~ /^([^:]*):[^:]*:[1-5]:([ft]):(.*):(\d+)$/;
       $state  = ($2 eq 'f') ? '-' : 'f';
-      $tasks .= sprintf("%2d. @%s [%s]: %s\n", $4, $1, $state, $3);
+
+      if ($COLOURED) {
+        my $col = ($2 eq 'f') ? '06' : '03';
+        $tasks .= sprintf("\x02%2d.\x0F ", $4) .
+                  "\x02\x03$col\@$1\x0F " .
+                  "\x02[$state]\x0F" .
+                  "\x03$col: $3\x0F\n";
+      }
+      else {
+        $tasks .= sprintf("%2d. @%s [%s]: %s\n", $4, $1, $state, $3);
+      }
     }
 
     return $tasks;
