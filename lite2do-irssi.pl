@@ -30,7 +30,7 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-08-19',
+  changed     => '2008-08-30',
 );
 
 # General script settings:
@@ -126,12 +126,12 @@ sub choose_id {
 # Display script help:
 sub display_help {
   return <<"END_HELP"
-Usage: $TRIGGER command [args...]
-  list [\@group] [text]   display items in the task list
-  add  [\@group] text     add new item to the task list
-  change id text         change item in the task list
-  finish id              finish item in the task list
-  remove id              remove item from the task list
+Usage: $TRIGGER command [arguments]
+  list [\@group] [text...]  display items in the task list
+  add  [\@group] text...    add new item to the task list
+  change id text...        change item in the task list
+  finish id                finish item in the task list
+  remove id                remove item from the task list
 END_HELP
 }
 
@@ -271,7 +271,8 @@ sub run_command {
     return display_help();
   }
   else {
-    return "Usage: $TRIGGER command [args...]"
+    return "Invalid command: $command\n" .
+           "Try `$TRIGGER help' for more information.";
   }
 }
 
