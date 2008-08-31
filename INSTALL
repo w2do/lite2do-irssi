@@ -1,0 +1,116 @@
+           lite2do-irssi - a lightweight todo manager for irssi
+
+                         installation instructions
+
+
+   Copyright (C) 2008 Jaromir Hradilek
+
+   Permission is granted to copy, distribute and/or modify this document
+   under the terms of the GNU Free Documentation License, Version 1.2 or
+   any later version published by the Free Software Foundation;  with no
+   Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+
+   A copy  of the license is included  as a file called FDL  in the main
+   directory of the lite2do-irssi source package.
+
+
+1. General System Requirements
+
+Working installation of Irssi IRC client capable of running Perl scripts is
+required in order to use this tool; see <http://www.irssi.org/>.
+
+
+2. Script Configuration
+
+Although lite2do-irssi  is instantly  fully operative  and default settings
+should be reasonable  enough to be  suitable for most users,  there are few
+options  you would (at least) like to know  about.  Open the source file in
+your favourite  text editor and find following  section near the  beginning
+of the file:
+
+  # General script settings:
+  our $HOMEDIR  = Irssi::get_irssi_dir();        # Irssi's  home directory.
+  our $SAVEFILE = catfile($HOMEDIR, 'lite2do');  # Save file location.
+  our $BACKEXT  = '.bak';                        # Backup file extension.
+  our $TRIGGER  = ':todo';                       # Script invoking command.
+  our $COLOURED = 0;                             # Whether to use colours.
+
+  # Access control:
+  our @ALLOWED  = qw( *!*@* );                   # Allowed IRC masks.
+
+
+2.1 Save File Location
+
+By default, all task are stored in ~/.irssi/lite2do. This is a safe choice,
+but there are situations when you may want or require a different location,
+for example  to share your task list with command-line lite2do utility. The
+quickest way is to provide the $SAVEFILE with absolute path like this:
+
+  our $SAVEFILE = '/home/user/.lite2do';
+
+However,  cleaner and more flexible way  would be to obtain the location of
+home directory from the environment variable,  i.e. HOME or USERPROFILE  on
+Unix systems and Windows respectively:
+
+  our $HOMEDIR  = $ENV{HOME} || $ENV{USERPROFILE};
+  our $SAVEFILE = catfile($HOMEDIR, '.lite2do');
+
+Notice the dot on the second line.
+
+
+2.2 Script Invoking Command
+
+By default, `:todo'  keyword at the beginning of line is used to invoke the
+script in public channels and private queries.  This is (intentionally) ra-
+ther unusual choice  as exclamation mark  is most frequently used for these
+purposes. To follow this practice, change value of $TRIGGER like this:
+
+  our $TRIGGER  = '!todo';
+
+
+2.3 Coloured Output
+
+Although lite2do-irssi is well capable of producing colourful output,  this
+option is turned off by default as most IRC users do not like to see it. To
+turn colours on, simply change the value of $COLOURED like this:
+
+  our $COLOURED = 1;
+
+
+2.3 Access Control
+
+By default,  everyone is granted  unlimited access  to the task list.  This
+apparent generosity serves the purpose: in accordance with the original de-
+sign, it encourages collaborative task management. This way, multiple users
+can co-work on different parts of a project  or even assign tasks to others
+(e.g. `:todo add @scotty Beam us up.' etc.). However,  if you find this be-
+haviour unsuitable,  you can limit the access to  specified IRC masks only;
+simply  place  space separated list of allowed masks between  the brackets,
+for example:
+
+  our @ALLOWED  = qw( blackened!~blackened@example.com *!*@127.0.0.1 );
+
+Each IRC mask is in the form nick!name@host.domain, asterisk is a wildcard.
+
+
+3. Script Installation
+
+To make it accessible from Irssi, place the script to the ~/.irssi/scripts/
+directory (creating it first if it is not there); for example:
+
+  mkdir ~/.irssi/scripts
+  cp lite2do-irssi.pl ~/.irssi/scripts
+
+You can now load it to Irssi using a following command:
+
+  /script load lite2do-irssi.pl
+
+Furthermore, if you want it to be loaded automatically every time the Irssi
+is started, you can also create a symlink in the ~/.irssi/scripts/autorun/:
+
+  mkdir ~/.irssi/scripts/autorun
+  cd ~/.irssi/scripts/autorun
+  ln -s ../lite2do-irssi.pl
+
+Type `/todo help' (or `:todo help' when in public channel)  for information
+about the usage.
