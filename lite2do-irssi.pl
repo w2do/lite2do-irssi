@@ -21,7 +21,7 @@ use File::Copy;
 use File::Spec::Functions;
 
 # General script information:
-our $VERSION  = '0.1.4';
+our $VERSION  = '0.1.5';
 our %IRSSI    = (
   authors     => 'Jaromir Hradilek',
   contact     => 'jhradilek@gmail.com',
@@ -30,7 +30,7 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-08-31',
+  changed     => '2008-09-06',
 );
 
 # General script settings:
@@ -132,6 +132,7 @@ Usage: $TRIGGER command [arguments]
   add  [\@group] text...    add new item to the task list
   change id text...        change item in the task list
   finish id                finish item in the task list
+  revive id                revive item in the task list
   remove id                remove item from the task list
 END_HELP
 }
@@ -222,6 +223,25 @@ sub finish_task {
   }
 }
 
+# Mark selected item in the task list as unfinished:
+sub revive_task {
+  my $id = shift;
+  my (@selected, @rest);
+
+  load_selection(\@selected, \@rest, $id);
+
+  if (@selected) {
+    pop(@selected) =~ /^([^:]*):([^:]*):([1-5]):[ft]:(.*):\d+$/;
+    push(@rest, "$1:$2:$3:f:$4:$id\n");
+
+    save_data(\@rest);
+    return "Task has been revived.";
+  }
+  else {
+    return "No matching task found.";
+  }
+}
+
 # Remove selected item from the task list:
 sub remove_task {
   my $id = shift;
@@ -271,6 +291,9 @@ sub run_command {
   }
   elsif ($command =~ /^finish\s+(\d+)/) {
     return finish_task($1);
+  }
+  elsif ($command =~ /^revive\s+(\d+)/) {
+    return revive_task($1);
   }
   elsif ($command =~ /^remove\s+(\d+)/) {
     return remove_task($1);
