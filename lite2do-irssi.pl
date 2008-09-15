@@ -30,7 +30,7 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-09-06',
+  changed     => '2008-09-15',
 );
 
 # General script settings:
@@ -42,6 +42,7 @@ our $COLOURED = 0;                               # Whether to use colours.
 
 # Access control:
 our @ALLOWED  = qw( *!*@* );                     # Allowed IRC masks.
+our @BANNED   = qw( );                           # Banned IRC masks.
 
 # Load selected data from the save file:
 sub load_selection {
@@ -319,7 +320,9 @@ sub message_public {
   return unless ($message =~ /^$TRIGGER/);
 
   # Check user's access permission:
-  if ($server->masks_match(join(' ', @ALLOWED), $nick, $address)) {
+  if ($server->masks_match(join(' ', @ALLOWED), $nick, $address) &&
+     !$server->masks_match(join(' ', @BANNED),  $nick, $address)) {
+
     # Strip message:
     $command = $message;
     $command =~ s/^$TRIGGER\s*//;
