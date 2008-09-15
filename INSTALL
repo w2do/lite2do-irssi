@@ -37,6 +37,7 @@ of the file:
 
   # Access control:
   our @ALLOWED  = qw( *!*@* );                   # Allowed IRC masks.
+  our @BANNED   = qw( );                         # Banned IRC masks.
 
 
 2.1 Save File Location
@@ -84,11 +85,12 @@ apparent generosity serves the purpose: in accordance with the original de-
 sign, it encourages collaborative task management. This way, multiple users
 can co-work on different parts of a project  or even assign tasks to others
 (e.g. `:todo add @scotty Beam us up.' etc.). However,  if you find this be-
-haviour unsuitable,  you can limit the access to  specified IRC masks only;
-simply  place  space separated list of allowed masks between  the brackets,
-for example:
+haviour unsuitable,  you can limit the access to and/or deny  the access to
+selected users only -- simply place space  separated list of allowed/banned
+masks between the brackets, for example:
 
-  our @ALLOWED  = qw( blackened!~blackened@example.com *!*@127.0.0.1 );
+  our @ALLOWED  = qw( blackened!~blackened@example.com *!*@192.168.1.1 );
+  our @BANNED   = qw( mrspammer!~mrspammer@192.168.1.1 );
 
 Each IRC mask is in the form nick!name@host.domain, asterisk is a wildcard.
 
