@@ -512,6 +512,14 @@ Mark item with selected I<id> as unfinished.
 
 Remove item with selected I<id> from the task list.
 
+=item B<help>
+
+Display usage information.
+
+=item B<version>
+
+Display version information.
+
 =back
 
 =head1 FILES
