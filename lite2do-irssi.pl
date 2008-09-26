@@ -30,7 +30,7 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-09-15',
+  changed     => '2008-09-26',
 );
 
 # General script settings:
@@ -373,3 +373,98 @@ Irssi::signal_add('message own_public', 'message_own_public');
 
 # Register commands:
 Irssi::command_bind('todo', 'cmd_todo');
+
+=head1 NAME
+
+lite2do-irssi - a lightweight todo manager for irssi
+
+=head1 SYNOPSIS
+
+In public channel or private query:
+
+  :todo command [arguments]
+
+or anywhere in Irssi:
+
+  /todo command [arguments]
+
+=head1 DESCRIPTION
+
+B<lite2do-irssi> is a lightweight todo manager for Irssi written in Perl 5.
+Being based on C<w2do> and fully compatible with its save file format, it
+tries to provide a simple alternative for IRC network capable of
+collaborative task management.
+
+=head1 COMMANDS
+
+=over
+
+=item B<list> [I<@group>] [I<text>...]
+
+Display items in the task list. All tasks are listed by default, but
+desired subset can be easily selected giving a group name, text pattern, or
+combination of both.
+
+=item B<add> [I<@group>] I<text>...
+
+Add new item to the task list.
+
+=item B<change> I<id> I<text>...
+
+Change item with selected I<id> in the task list.
+
+=item B<finish> I<id>
+
+Mark item with selected I<id> as finished.
+
+=item B<revive> I<id>
+
+Mark item with selected I<id> as unfinished.
+
+=item B<remove> I<id>
+
+Remove item with selected I<id> from the task list.
+
+=back
+
+=head1 FILES
+
+=over
+
+=item F<~/.irssi/lite2do>
+
+Default save file.
+
+=back
+
+=head1 SEE ALSO
+
+B<w2do>(1), B<lite2do>(1), B<irssi>(1).
+
+=head1 BUGS
+
+To report bugs or even send patches, please visit the project homepage:
+L<http://gitorious.org/projects/lite2do-irssi>.
+
+=head1 AUTHOR
+
+Written by Jaromir Hradilek <jhradilek@gmail.com>.
+
+Permission is granted to copy, distribute and/or modify this document under
+the terms of the GNU Free Documentation License, Version 1.2 or any later
+version published by the Free Software Foundation; with no Invariant
+Sections, no Front-Cover Texts, and no Back-Cover Texts.
+
+A copy of the license is included as a file called FDL in the main
+directory of the lite2do source package.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2008 Jaromir Hradilek
+
+This program is free software; see the source for copying conditions. It is
+distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+=cut
