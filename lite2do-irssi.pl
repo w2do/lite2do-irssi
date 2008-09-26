@@ -48,15 +48,22 @@ our @BANNED   = qw( );                           # Banned IRC masks.
 sub load_selection {
   my ($selected, $rest, $id, $group, $task) = @_;
 
+  # Escape reserved characters:
   $group =~ s/([\\\^\.\$\|\(\)\[\]\*\+\?\{\}])/\\$1/g if $group;
   $task  =~ s/([\\\^\.\$\|\(\)\[\]\*\+\?\{\}])/\\$1/g if $task;
 
+  # Use default pattern when none is provided:
   $id    ||= '\d+';
   $group ||= '[^:]*';
   $task  ||= '';
 
+  # Open the save file for reading:
   if (open(SAVEFILE, "$SAVEFILE")) {
+
+    # Process each line:
     while (my $line = <SAVEFILE>) {
+
+      # Check whether the line matches given pattern:
       if ($line =~ /^$group:[^:]*:[1-5]:[ft]:.*$task.*:$id$/i) {
         push(@$selected, $line);
       }
@@ -65,6 +72,7 @@ sub load_selection {
       }
     }
 
+    # Close the save file:
     close(SAVEFILE);
   }
 }
@@ -73,16 +81,22 @@ sub load_selection {
 sub save_data {
   my $data = shift;
 
+  # Backup the save file:
   copy($SAVEFILE, "$SAVEFILE$BACKEXT") if (-r $SAVEFILE);
 
+  # Open the save file for writing:
   if (open(SAVEFILE, ">$SAVEFILE")) {
+
+    # Write data to the save file:
     foreach my $line (@$data) {
       print SAVEFILE $line;
     }
 
+    # Close the save file:
     close(SAVEFILE);
   }
   else {
+    # Report failure:
     Irssi::print($IRSSI{name} . ": Unable to write to `$SAVEFILE'.");
   }
 }
@@ -91,16 +105,22 @@ sub save_data {
 sub add_data {
   my $data = shift;
 
+  # Backup the save file:
   copy($SAVEFILE, "$SAVEFILE$BACKEXT") if (-r $SAVEFILE);
 
+  # Open the save file for appending:
   if (open(SAVEFILE, ">>$SAVEFILE")) {
+
+    # Write data to the save file:
     foreach my $line (@$data) {
       print SAVEFILE $line;
     }
 
+    # Close the save file:
     close(SAVEFILE);
   }
   else {
+    # Report failure:
     Irssi::print($IRSSI{name} . ": Unable to write to `$SAVEFILE'.");
   }
 }
@@ -110,18 +130,24 @@ sub choose_id {
   my @used   = ();
   my $chosen = 1;
 
+  # Open the save file for reading:
   if (open(SAVEFILE, "$SAVEFILE")) {
+
+    # Build the list of used IDs:
     while (my $line = <SAVEFILE>) {
       push(@used, int($1)) if ($line =~ /:(\d+)$/);
     }
 
+    # Close the save file:
     close(SAVEFILE);
 
+    # Find first unused ID:
     foreach my $id (sort {$a <=> $b} @used) {
       $chosen++ if ($chosen == $id);
     }
   }
 
+  # Return the result:
   return $chosen;
 }
 
@@ -148,28 +174,42 @@ sub list_tasks {
   my ($group, $task) = @_;
   my (@selected, $state, $tasks);
 
+  # Load matching tasks:
   load_selection(\@selected, undef, undef, $group, $task);
 
+  # Check whether the list is not empty:
   if (@selected) {
+
+    # Process each task:
     foreach my $line (sort @selected) {
+
+      # Parse the task record:
       $line   =~ /^([^:]*):[^:]*:[1-5]:([ft]):(.*):(\d+)$/;
       $state  = ($2 eq 'f') ? '-' : 'f';
 
+      # Check whether to use coloured output:
       if ($COLOURED) {
+
+        # Decide which colour to use:
         my $col = ($2 eq 'f') ? '06' : '03';
+
+        # Create the task entry:
         $tasks .= sprintf("\x02%2d.\x0F ", $4) .
                   "\x02\x03$col\@$1\x0F " .
                   "\x02[$state]\x0F" .
                   "\x03$col: $3\x0F\n";
       }
       else {
+        # Create the task entry:
         $tasks .= sprintf("%2d. @%s [%s]: %s\n", $4, $1, $state, $3);
       }
     }
 
+    # Return the result:
     return $tasks;
   }
   else {
+    # Report empty list:
     return "No matching task found.";
   }
 }
@@ -180,9 +220,13 @@ sub add_task {
   my $group = shift || 'general';
   my $id    = choose_id();
 
+  # Create the task record:
   my @data  = (substr($group, 0, 10) . ":anytime:3:f:$task:$id\n");
 
+  # Add data to the end of the save file:
   add_data(\@data);
+
+  # Report success:
   return "Task has been successfully added with id $id.";
 }
 
@@ -191,16 +235,26 @@ sub change_task {
   my ($id, $task) = @_;
   my (@selected, @rest);
 
+  # Load tasks:
   load_selection(\@selected, \@rest, $id);
 
+  # Check whether the list is not empty:
   if (@selected) {
+
+    # Parse the task record:
     pop(@selected) =~ /^([^:]*):([^:]*):([1-5]):([ft]):.*:\d+$/;
+
+    # Update the task record:
     push(@rest, "$1:$2:$3:$4:$task:$id\n");
 
+    # Store data to the save file:
     save_data(\@rest);
+
+    # Report success:
     return "Task has been successfully changed.";
   }
   else {
+    # Report empty list:
     return "No matching task found.";
   }
 }
@@ -210,16 +264,26 @@ sub finish_task {
   my $id = shift;
   my (@selected, @rest);
 
+  # Load tasks:
   load_selection(\@selected, \@rest, $id);
 
+  # Check whether the list is not empty:
   if (@selected) {
+
+    # Parse the task record:
     pop(@selected) =~ /^([^:]*):([^:]*):([1-5]):[ft]:(.*):\d+$/;
+
+    # Update the task record:
     push(@rest, "$1:$2:$3:t:$4:$id\n");
 
+    # Store data to the save file:
     save_data(\@rest);
+
+    # Report success:
     return "Task has been finished.";
   }
   else {
+    # Report empty list:
     return "No matching task found.";
   }
 }
@@ -229,16 +293,26 @@ sub revive_task {
   my $id = shift;
   my (@selected, @rest);
 
+  # Load tasks:
   load_selection(\@selected, \@rest, $id);
 
+  # Check whether the list is not empty:
   if (@selected) {
+
+    # Parse the task record:
     pop(@selected) =~ /^([^:]*):([^:]*):([1-5]):[ft]:(.*):\d+$/;
+
+    # Update the task record:
     push(@rest, "$1:$2:$3:f:$4:$id\n");
 
+    # Store data to the save file:
     save_data(\@rest);
+
+    # Report success:
     return "Task has been revived.";
   }
   else {
+    # Report empty list:
     return "No matching task found.";
   }
 }
@@ -248,13 +322,20 @@ sub remove_task {
   my $id = shift;
   my (@selected, @rest);
 
+  # Load tasks:
   load_selection(\@selected, \@rest, $id);
 
+  # Check whether the list is not empty:
   if (@selected) {
+
+    # Store data to the save file:
     save_data(\@rest);
+
+    # Report success:
     return "Task has been successfully removed.";
   }
   else {
+    # Report empty list:
     return "No matching task found.";
   }
 }
@@ -263,7 +344,10 @@ sub remove_task {
 sub send_message {
   my ($server, $target, $message) = @_;
 
+  # Process each line:
   foreach my $line (split(/\n/, $message)) {
+
+    # Send it as an IRC message:
     $server->command("MSG $target $line") if $line;
   }
 }
@@ -272,6 +356,7 @@ sub send_message {
 sub run_command {
   my $command = shift;
 
+  # Parse command:
   if ($command =~ /^(|list)\s*$/) {
     return list_tasks();
   }
@@ -343,6 +428,7 @@ sub message_public {
 sub message_private {
   my ($server, $message, $nick, $address) = @_;
 
+  # Otherwise same as in public message:
   message_public($server, $message, $nick, $address, $nick);
 }
 
@@ -352,6 +438,7 @@ sub message_own_public {
   my $nick    = $server->{nick};
   my $address = $server->{userhost};
 
+  # Otherwise same as in public message:
   message_public($server, $message, $nick, $address, $target);
 }
 
