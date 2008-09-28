@@ -34,7 +34,8 @@ of the file:
   our $BACKEXT  = '.bak';                        # Backup file extension.
   our $TRIGGER  = ':todo';                       # Script invoking command.
   our $COLOURED = 0;                             # Whether to use colours.
-
+  our $LISTALL  = 0;                             # Whether to allow listing
+                                                 # all tasks at once.
   # Access control:
   our @ALLOWED  = qw( *!*@* );                   # Allowed IRC masks.
   our @BANNED   = qw( );                         # Banned IRC masks.
@@ -78,7 +79,18 @@ turn colours on, simply change the value of $COLOURED like this:
   our $COLOURED = 1;
 
 
-2.4 Access Control
+2.4 Tasks Listing
+
+As the task list grows, listing all tasks at once can become quite slow and
+rather annoying. In most cases,  listing a single group and/or tasks match-
+ing the given pattern only is satisfactory enough and usually produces much
+shorter results. Nevertheless, if you wish to allow it, simply change value
+of $LISTALL as follows:
+
+  our $LISTALL  = 1;
+
+
+2.5 Access Control
 
 By default,  everyone is granted  unlimited access  to the task list.  This
 apparent generosity serves the purpose: in accordance with the original de-
