@@ -30,7 +30,7 @@ our %IRSSI    = (
                  '<http://code.google.com/p/w2do/> for more information.' ,
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-09-26',
+  changed     => '2008-09-28',
 );
 
 # General script settings:
@@ -39,7 +39,8 @@ our $SAVEFILE = catfile($HOMEDIR, 'lite2do');    # Save file location.
 our $BACKEXT  = '.bak';                          # Backup file extension.
 our $TRIGGER  = ':todo';                         # Script invoking command.
 our $COLOURED = 0;                               # Whether to use colours.
-
+our $LISTALL  = 0;                               # Whether to allow listing
+                                                 # all tasks at once.
 # Access control:
 our @ALLOWED  = qw( *!*@* );                     # Allowed IRC masks.
 our @BANNED   = qw( );                           # Banned IRC masks.
@@ -65,9 +66,11 @@ sub load_selection {
 
       # Check whether the line matches given pattern:
       if ($line =~ /^$group:[^:]*:[1-5]:[ft]:.*$task.*:$id$/i) {
+        # Add the line to selected tasks:
         push(@$selected, $line);
       }
       else {
+        # Add the line to unselected tasks:
         push(@$rest, $line);
       }
     }
@@ -123,6 +126,26 @@ sub add_data {
     # Report failure:
     Irssi::print($IRSSI{name} . ": Unable to write to `$SAVEFILE'.");
   }
+}
+
+# Get list of all groups:
+sub get_groups {
+  my %groups = ();
+
+  # Open the save file for reading:
+  if (open(SAVEFILE, "$SAVEFILE")) {
+
+    # Build the list of used groups:
+    while (my $line = <SAVEFILE>) {
+      $groups{lc($1)} = 1 if ($line =~ /^([^:]*):/);
+    }
+
+    # Close the save file:
+    close(SAVEFILE);
+  }
+
+  # Return the result:
+  return keys(%groups);
 }
 
 # Choose first available ID:
@@ -358,39 +381,61 @@ sub run_command {
 
   # Parse command:
   if ($command =~ /^(|list)\s*$/) {
-    return list_tasks();
+
+    # Check whether the all tasks listing is allowed:
+    unless ($LISTALL) {
+
+      # Ask user to specify the group:
+      return "Please specify one of the following groups: " .
+             join(', ', get_groups());
+    }
+    else {
+      # List all tasks:
+      return list_tasks();
+    }
   }
   elsif ($command =~ /^list\s+@(\S+)\s*(\S.*|)$/) {
+    # List tasks in the selected group:
     return list_tasks($1, $2);
   }
   elsif ($command =~ /^list\s+(\S.*)$/) {
+    # List tasks matching given pattern:
     return list_tasks(undef, $1);
   }
   elsif ($command =~ /^add\s+@(\S+)\s+(\S.*)/) {
+    # Add new task to selected group:
     return add_task($2, $1);
   }
   elsif ($command =~ /^add\s+(\S.*)/) {
+    # Add new task to default group:
     return add_task($1);
   }
   elsif ($command =~ /^change\s+(\d+)\s+(\S.*)/) {
+    # Change selected task:
     return change_task($1, $2);
   }
   elsif ($command =~ /^finish\s+(\d+)/) {
+    # Mark selected task as finished:
     return finish_task($1);
   }
   elsif ($command =~ /^revive\s+(\d+)/) {
+    # Mark selected task as unfinished:
     return revive_task($1);
   }
   elsif ($command =~ /^remove\s+(\d+)/) {
+    # Remove selected task:
     return remove_task($1);
   }
   elsif ($command =~ /^version\s*$/) {
+    # Display version information:
     return display_version();
   }
   elsif ($command =~ /^help\s*$/) {
+    # Display help information:
     return display_help();
   }
   else {
+    # Report invalid command:
     return "Invalid command: $command\n" .
            "Try `$TRIGGER help' for more information.";
   }
