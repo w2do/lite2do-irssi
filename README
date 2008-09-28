@@ -1,0 +1,94 @@
+           lite2do-irssi - a lightweight todo manager for irssi
+
+                             usage information
+
+
+   Copyright (C) 2008 Jaromir Hradilek
+
+   Permission is granted to copy, distribute and/or modify this document
+   under the terms of the GNU Free Documentation License, Version 1.2 or
+   any later version published by the Free Software Foundation;  with no
+   Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+
+   A copy  of the license is included  as a file called FDL  in the main
+   directory of the lite2do-irssi source package.
+
+
+1. About the Script
+
+lite2do-irssi is  a lightweight todo manager  for Irssi  written in Perl 5.
+Being based  on w2do  and fully compatible  with its  save file format,  it
+tries to provide a simple alternative for IRC network capable of collabora-
+tive task management.
+
+
+2. Script Usage
+
+Unless set otherwise,  everyone is granted  an unlimited access to the task
+list from both public channel and private query using a command in the fol-
+lowing format:
+
+  :todo command [arguments]
+
+Alternatively,  if you are running the script in your client,  you can also
+use an Irssi command:
+
+  /todo command [arguments]
+
+Available commands are as follows:
+
+  list [@group] [text...]
+    Display items in the task list.  Desired subset can be  easily selected
+    giving a group name, text pattern,  or combination of both; listing all
+    tasks is usually disabled to avoid unnecessary flood.
+
+  add [@group] text...
+    Add new item to the task list.
+
+  change id text...
+    Change item with selected id in the task list.
+
+  finish id
+    Mark item with selected id as finished.
+
+  revive id
+    Mark item with selected id as unfinished.
+
+  remove id
+    Remove item with selected id from the task list.
+
+  help
+    Display usage information.
+
+  version
+    Display version information.
+
+
+3. Additional Tools
+
+Sooner or later, you are going to notice that lite2do-irssi lacks some more
+sophisticated commands that might prove useful for administration purposes,
+such as operations on whole groups, mass removal of finished tasks, or even
+clearing the task list. This is not a design flaw. On the contrary, follow-
+ing the  principle not to reinvent  the wheel,  the use of w2do is strongly
+advised.
+
+w2do is a simple to use yet efficient command-line todo manager  written in
+Perl 5 on which the lite2do-irssi is based,  and you can freely download it
+from <http://code.google.com/p/w2do/>.
+
+
+4. Bugs
+
+To report bugs or even send patches,  please visit the project home page at
+<http://gitorious.org/projects/lite2do-irssi>.
+
+
+5. Copyright
+
+Copyright (C) 2008 Jaromir Hradilek
+
+This program is free software; see the source for copying conditions. It is
+distributed  in the hope that it will be useful,  but WITHOUT ANY WARRANTY;
+without even the implied warranty of  MERCHANTABILITY or FITNESS FOR A PAR-
+TICULAR PURPOSE.

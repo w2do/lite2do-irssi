@@ -1,4 +1,4 @@
-# lite2do-irssi, an irssi script providing access to w2do task list via IRC
+# lite2do-irssi, a lightweight todo manager for irssi
 # Copyright (C) 2008 Jaromir Hradilek
 
 # This program is free software;  you can redistribute it  and/or modify it
@@ -533,9 +533,9 @@ collaborative task management.
 
 =item B<list> [I<@group>] [I<text>...]
 
-Display items in the task list. All tasks are listed by default, but
-desired subset can be easily selected giving a group name, text pattern, or
-combination of both.
+Display items in the task list. Desired subset can be easily selected
+giving a group name, text pattern, or combination of both; listing all
+tasks is usually disabled to avoid unnecessary flood.
 
 =item B<add> [I<@group>] I<text>...
 
@@ -596,7 +596,7 @@ version published by the Free Software Foundation; with no Invariant
 Sections, no Front-Cover Texts, and no Back-Cover Texts.
 
 A copy of the license is included as a file called FDL in the main
-directory of the lite2do source package.
+directory of the lite2do-irssi source package.
 
 =head1 COPYRIGHT
 
