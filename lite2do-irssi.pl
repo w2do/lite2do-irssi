@@ -21,16 +21,18 @@ use File::Copy;
 use File::Spec::Functions;
 
 # General script information:
-our $VERSION  = '0.1.5';
+our $VERSION  = '1.0.0';
 our %IRSSI    = (
   authors     => 'Jaromir Hradilek',
   contact     => 'jhradilek@gmail.com',
   name        => 'lite2do-irssi',
-  description => 'Access your w2do task list from anywhere via IRC! See ' .
-                 '<http://code.google.com/p/w2do/> for more information.' ,
+  description => 'A lightweight todo manager.  Being based on w2do and '.
+                 'fully compatible with its save file format, it tries '.
+                 'to provide a simple alternative for IRC network well '.
+                 'capable of collaborative task management. ',
   url         => 'http://gitorious.org/projects/lite2do-irssi',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-09-28',
+  changed     => '2008-09-30',
 );
 
 # General script settings:

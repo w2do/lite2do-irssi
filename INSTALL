@@ -126,5 +126,5 @@ is started, you can also create a symlink in the ~/.irssi/scripts/autorun/:
   cd ~/.irssi/scripts/autorun/
   ln -s ../lite2do-irssi.pl
 
-Type `/todo help' (or `:todo help' when in public channel)  for information
-about the usage.
+See a file called README in the main directory of the lite2do-irssi package
+or type `/todo help' for more information about the usage.
