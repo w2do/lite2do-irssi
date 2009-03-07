@@ -397,9 +397,19 @@ sub run_command {
     # Check whether the all tasks listing is allowed:
     unless ($LISTALL) {
 
-      # Ask user to specify the group:
-      return "Please specify one of the following groups: " .
-             join(', ', get_groups());
+      # Get list of all groups:
+      my $groups = join(', ', get_groups());
+
+      # Make sure the task list is not empty:
+      if ($groups) {
+
+        # Ask user to specify the group:
+        return "Please specify one of the following groups: $groups.";
+      }
+      else {
+        # Report empty list:
+        return "No matching task found.";
+      }
     }
     else {
       # List all tasks:
