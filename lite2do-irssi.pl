@@ -1,5 +1,5 @@
 # lite2do-irssi, a lightweight todo manager for irssi
-# Copyright (C) 2008 Jaromir Hradilek
+# Copyright (C) 2008, 2009 Jaromir Hradilek
 
 # This program is free software;  you can redistribute it  and/or modify it
 # under the  terms of the  GNU General Public License  as published  by the
@@ -30,9 +30,9 @@ our %IRSSI    = (
                  'fully compatible with its save file format, it tries '.
                  'to provide a simple alternative for IRC network well '.
                  'capable of collaborative task management. ',
-  url         => 'http://gitorious.org/projects/lite2do-irssi',
+  url         => 'http://w2do.blackened.cz/',
   license     => 'GNU General Public License, version 3',
-  changed     => '2008-09-30',
+  changed     => '2009-03-07',
 );
 
 # General script settings:
@@ -400,7 +400,7 @@ sub run_command {
     # List tasks in the selected group:
     return list_tasks($1, $2);
   }
-  elsif ($command =~ /^list\s+(\S.*)$/) {
+  elsif ($command =~ /^list\s+([^@\s].*)$/) {
     # List tasks matching given pattern:
     return list_tasks(undef, $1);
   }
@@ -408,11 +408,11 @@ sub run_command {
     # Add new task to selected group:
     return add_task($2, $1);
   }
-  elsif ($command =~ /^add\s+(\S.*)/) {
+  elsif ($command =~ /^add\s+([^@\s].*)/) {
     # Add new task to default group:
     return add_task($1);
   }
-  elsif ($command =~ /^change\s+(\d+)\s+(\S.*)/) {
+  elsif ($command =~ /^change\s+(\d+)\s+([^@\s].*)/) {
     # Change selected task:
     return change_task($1, $2);
   }
@@ -438,7 +438,7 @@ sub run_command {
   }
   else {
     # Report invalid command:
-    return "Invalid command: $command\n" .
+    return "Invalid command or argument.\n" .
            "Try `$TRIGGER help' for more information.";
   }
 }
@@ -463,6 +463,7 @@ sub message_public {
     $response = run_command($command);
   }
   else {
+    # Report denial:
     $response = "Access denied.";
   }
 
@@ -585,8 +586,10 @@ B<w2do>(1), B<lite2do>(1), B<irssi>(1).
 
 =head1 BUGS
 
-To report bugs or even send patches, please visit the project homepage:
-L<http://gitorious.org/projects/lite2do-irssi>.
+To report bugs or even send patches, you can either add new issue to the
+project bugtracker at <http://code.google.com/p/w2do/issues/>, visit the
+discussion group at <http://groups.google.com/group/w2do/>, or you can
+contact the author directly via e-mail.
 
 =head1 AUTHOR
 
@@ -602,7 +605,7 @@ directory of the lite2do-irssi source package.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2008 Jaromir Hradilek
+Copyright (C) 2008, 2009 Jaromir Hradilek
 
 This program is free software; see the source for copying conditions. It is
 distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
