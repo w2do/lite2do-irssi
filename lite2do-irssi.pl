@@ -382,7 +382,7 @@ sub run_command {
   my $command = shift;
 
   # Parse command:
-  if ($command =~ /^(|list)\s*$/) {
+  if ($command =~ /^(|list|ls)\s*$/) {
 
     # Check whether the all tasks listing is allowed:
     unless ($LISTALL) {
@@ -396,13 +396,13 @@ sub run_command {
       return list_tasks();
     }
   }
-  elsif ($command =~ /^list\s+@(\S+)\s*(\S.*|)$/) {
+  elsif ($command =~ /^(list|ls)\s+@(\S+)\s*(\S.*|)$/) {
     # List tasks in the selected group:
-    return list_tasks($1, $2);
+    return list_tasks($2, $3);
   }
-  elsif ($command =~ /^list\s+([^@\s].*)$/) {
+  elsif ($command =~ /^(list|ls)\s+([^@\s].*)$/) {
     # List tasks matching given pattern:
-    return list_tasks(undef, $1);
+    return list_tasks(undef, $2);
   }
   elsif ($command =~ /^add\s+@(\S+)\s+(\S.*)/) {
     # Add new task to selected group:
@@ -412,21 +412,21 @@ sub run_command {
     # Add new task to default group:
     return add_task($1);
   }
-  elsif ($command =~ /^change\s+(\d+)\s+([^@\s].*)/) {
+  elsif ($command =~ /^(change|mv)\s+(\d+)\s+([^@\s].*)/) {
     # Change selected task:
-    return change_task($1, $2);
+    return change_task($2, $3);
   }
-  elsif ($command =~ /^finish\s+(\d+)/) {
+  elsif ($command =~ /^(finish|fn)\s+(\d+)/) {
     # Mark selected task as finished:
-    return finish_task($1);
+    return finish_task($2);
   }
-  elsif ($command =~ /^revive\s+(\d+)/) {
+  elsif ($command =~ /^(revive|re)\s+(\d+)/) {
     # Mark selected task as unfinished:
-    return revive_task($1);
+    return revive_task($2);
   }
-  elsif ($command =~ /^remove\s+(\d+)/) {
+  elsif ($command =~ /^(remove|rm)\s+(\d+)/) {
     # Remove selected task:
-    return remove_task($1);
+    return remove_task($2);
   }
   elsif ($command =~ /^version\s*$/) {
     # Display version information:
@@ -536,6 +536,8 @@ collaborative task management.
 
 =item B<list> [I<@group>] [I<text>...]
 
+=item B<ls> [I<@group>] [I<text>...]
+
 Display items in the task list. Desired subset can be easily selected
 giving a group name, text pattern, or combination of both; listing all
 tasks is usually disabled to avoid unnecessary flood.
@@ -546,17 +548,25 @@ Add new item to the task list.
 
 =item B<change> I<id> I<text>...
 
+=item B<mv> I<id> I<text>...
+
 Change item with selected I<id> in the task list.
 
 =item B<finish> I<id>
+
+=item B<fn> I<id>
 
 Mark item with selected I<id> as finished.
 
 =item B<revive> I<id>
 
+=item B<re> I<id>
+
 Mark item with selected I<id> as unfinished.
 
 =item B<remove> I<id>
+
+=item B<rm> I<id>
 
 Remove item with selected I<id> from the task list.
 
@@ -596,7 +606,7 @@ contact the author directly via e-mail.
 Written by Jaromir Hradilek <jhradilek@gmail.com>.
 
 Permission is granted to copy, distribute and/or modify this document under
-the terms of the GNU Free Documentation License, Version 1.2 or any later
+the terms of the GNU Free Documentation License, Version 1.3 or any later
 version published by the Free Software Foundation; with no Invariant
 Sections, no Front-Cover Texts, and no Back-Cover Texts.
 
