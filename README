@@ -28,12 +28,12 @@ Unless set otherwise,  everyone is granted  an unlimited access to the task
 list from both public channel and private query using a command in the fol-
 lowing format:
 
-  :todo command [arguments]
+  :todo command [argument...]
 
 Alternatively,  if you are running the script in your client,  you can also
 use an Irssi command:
 
-  /todo command [arguments]
+  /todo command [argument...]
 
 Available commands are as follows:
 
@@ -49,6 +49,10 @@ Available commands are as follows:
   change id text...
   mv id text...
     Change item with selected id in the task list.
+
+  change id @group
+  mv id @group
+    Change group the item with selected id belongs to.
 
   finish id
   fn id

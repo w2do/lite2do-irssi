@@ -179,10 +179,10 @@ sub choose_id {
 # Display script help:
 sub display_help {
   return <<"END_HELP"
-Usage: $TRIGGER command [arguments]
+Usage: $TRIGGER command [argument...]
   list [\@group] [text...]  display items in the task list
   add  [\@group] text...    add new item to the task list
-  change id text...        change item in the task list
+  change id \@group|text... change item in the task list
   finish id                finish item in the task list
   revive id                revive item in the task list
   remove id                remove item from the task list
@@ -257,7 +257,9 @@ sub add_task {
 
 # Change selected item in the task list:
 sub change_task {
-  my ($id, $task) = @_;
+  my $id     = shift;
+  my $text   = shift;
+  my $group  = shift || 0;
   my (@selected, @rest);
 
   # Load tasks:
@@ -267,10 +269,18 @@ sub change_task {
   if (@selected) {
 
     # Parse the task record:
-    pop(@selected) =~ /^([^:]*):([^:]*):([1-5]):([ft]):.*:\d+$/;
+    pop(@selected) =~ /^([^:]*):([^:]*):([1-5]):([ft]):(.*):\d+$/;
 
-    # Update the task record:
-    push(@rest, "$1:$2:$3:$4:$task:$id\n");
+    # Decide which part to edit:
+    unless ($group) {
+
+      # Update the task record:
+      push(@rest, "$1:$2:$3:$4:$text:$id\n");
+    }
+    else {
+      # Update the group record:
+      push(@rest, substr($text, 0, 10) . ":$2:$3:$4:$5:$id\n");
+    }
 
     # Store data to the save file:
     save_data(\@rest);
@@ -412,6 +422,10 @@ sub run_command {
     # Add new task to default group:
     return add_task($1);
   }
+  elsif ($command =~ /^(change|mv)\s+(\d+)\s+@(\S+)\s*$/) {
+    # Change selected task group:
+    return change_task($2, $3, 1);
+  }
   elsif ($command =~ /^(change|mv)\s+(\d+)\s+([^@\s].*)/) {
     # Change selected task:
     return change_task($2, $3);
@@ -517,11 +531,11 @@ lite2do-irssi - a lightweight todo manager for irssi
 
 In public channel or private query:
 
-  :todo command [arguments]
+  :todo command [argument...]
 
 or anywhere in Irssi:
 
-  /todo command [arguments]
+  /todo command [argument...]
 
 =head1 DESCRIPTION
 
@@ -539,8 +553,8 @@ collaborative task management.
 =item B<ls> [I<@group>] [I<text>...]
 
 Display items in the task list. Desired subset can be easily selected
-giving a group name, text pattern, or combination of both; listing all
-tasks is usually disabled to avoid unnecessary flood.
+giving a I<group> name, I<text> pattern, or combination of both; listing
+all tasks is usually disabled to avoid unnecessary flood.
 
 =item B<add> [I<@group>] I<text>...
 
@@ -551,6 +565,12 @@ Add new item to the task list.
 =item B<mv> I<id> I<text>...
 
 Change item with selected I<id> in the task list.
+
+=item B<change> I<id> @I<group>
+
+=item B<mv> I<id> @I<group>
+
+Change I<group> the item with selected I<id> belongs to.
 
 =item B<finish> I<id>
 
