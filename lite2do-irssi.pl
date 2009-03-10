@@ -32,7 +32,7 @@ our %IRSSI    = (
                  'capable of collaborative task management. ',
   url         => 'http://w2do.blackened.cz/',
   license     => 'GNU General Public License, version 3',
-  changed     => '2009-03-07',
+  changed     => '2009-03-10',
 );
 
 # General script settings:
@@ -54,6 +54,9 @@ sub load_selection {
   # Escape reserved characters:
   $group =~ s/([\\\^\.\$\|\(\)\[\]\*\+\?\{\}])/\\$1/g if $group;
   $task  =~ s/([\\\^\.\$\|\(\)\[\]\*\+\?\{\}])/\\$1/g if $task;
+
+  # Remove colons if any:
+  $group =~ s/://g if $group;
 
   # Use default pattern when none is provided:
   $id    ||= '\d+';
@@ -176,6 +179,20 @@ sub choose_id {
   return $chosen;
 }
 
+# Fix the group name:
+sub fix_group {
+  my $group = shift || return 'general';
+
+  # Remove forbidden characters:
+  $group =~ s/://g;
+
+  # Strip it to the maximal allowed length:
+  $group = substr($group, 0, 10);
+
+  # Return the result using the default when empty:
+  return $group ? $group : 'general';
+}
+
 # Display script help:
 sub display_help {
   return <<"END_HELP"
@@ -246,7 +263,7 @@ sub add_task {
   my $id    = choose_id();
 
   # Create the task record:
-  my @data  = (substr($group, 0, 10) . ":anytime:3:f:$task:$id\n");
+  my @data  = (fix_group($group) . ":anytime:3:f:$task:$id\n");
 
   # Add data to the end of the save file:
   add_data(\@data);
@@ -279,7 +296,7 @@ sub change_task {
     }
     else {
       # Update the group record:
-      push(@rest, substr($text, 0, 10) . ":$2:$3:$4:$5:$id\n");
+      push(@rest, fix_group($text) . ":$2:$3:$4:$5:$id\n");
     }
 
     # Store data to the save file:
