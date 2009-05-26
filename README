@@ -66,8 +66,10 @@ Available commands are as follows:
   rm id
     Remove item with selected id from the task list.
 
-  help
-    Display usage information.
+  help [command]
+    Display usage information.  By default,  list of all supported commands
+    is displayed. If  the command is supplied,  further  information on its
+    usage are displayed instead.
 
   version
     Display version information.

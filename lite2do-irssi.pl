@@ -32,7 +32,7 @@ our %IRSSI    = (
                  'capable of collaborative task management. ',
   url         => 'http://w2do.blackened.cz/',
   license     => 'GNU General Public License, version 3',
-  changed     => '2009-03-10',
+  changed     => '2009-05-26',
 );
 
 # General script settings:
@@ -193,17 +193,47 @@ sub fix_group {
   return $group ? $group : 'general';
 }
 
-# Display script help:
+# Display script usage:
 sub display_help {
-  return <<"END_HELP"
-Usage: $TRIGGER command [argument...]
-  list [\@group] [text...]  display items in the task list
-  add  [\@group] text...    add new item to the task list
-  change id \@group|text... change item in the task list
-  finish id                finish item in the task list
-  revive id                revive item in the task list
-  remove id                remove item from the task list
-END_HELP
+  my $command = shift || '';
+
+  # Parse command and return appropriate usage information:
+  if ($command =~ /list|ls/) {
+    return "Displays items in the task list. " .
+           "Usage: $TRIGGER list [\@group] [text...]";
+  }
+  elsif ($command =~ /add/) {
+    return "Adds new item to the task list. " .
+           "Usage: $TRIGGER add [\@group] text...";
+  }
+  elsif ($command =~ /change/) {
+    return "Changes selected item in the task list. " .
+           "Usage: $TRIGGER change id \@group|text...";
+  }
+  elsif ($command =~ /finish|fn/) {
+    return "Finishes selected item in the task list. " .
+           "Usage: $TRIGGER finish id";
+  }
+  elsif ($command =~ /revive|re/) {
+    return "Revives selected item in the task list. " .
+           "Usage: $TRIGGER revive id";
+  }
+  elsif ($command =~ /remove|rm/) {
+    return "Removes selected item from the task list. " .
+           "Usage: $TRIGGER remove id";
+  }
+  elsif ($command =~ /version/) {
+    return "Displays version information. " .
+           "Usage: $TRIGGER version";
+  }
+  elsif ($command =~ /help/) {
+    return "Displays usage information. " .
+           "Usage: $TRIGGER help [command]";
+  }
+  else {
+    return "Allowed commands: list, add, change, finish, revive, remove, ".
+           "version. Try `$TRIGGER help command' for more information.";
+  }
 }
 
 # Display script version:
@@ -474,8 +504,12 @@ sub run_command {
     return display_version();
   }
   elsif ($command =~ /^help\s*$/) {
-    # Display help information:
+    # Display list of supported commands:
     return display_help();
+  }
+  elsif ($command =~ /^help\s+(\S+)/) {
+    # Display information on a specific command:
+    return display_help($1);
   }
   else {
     # Report invalid command:
@@ -617,9 +651,11 @@ Mark item with selected I<id> as unfinished.
 
 Remove item with selected I<id> from the task list.
 
-=item B<help>
+=item B<help> [I<command>]
 
-Display usage information.
+Display usage information. By default, list of all supported commands is
+displayed. If the I<command> is supplied, further information on its usage
+are displayed instead.
 
 =item B<version>
 
