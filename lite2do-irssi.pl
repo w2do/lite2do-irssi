@@ -21,7 +21,7 @@ use File::Copy;
 use File::Spec::Functions;
 
 # General script information:
-our $VERSION  = '1.1.0';
+our $VERSION  = '1.1.1';
 our %IRSSI    = (
   authors     => 'Jaromir Hradilek',
   contact     => 'jhradilek@gmail.com',
@@ -32,7 +32,7 @@ our %IRSSI    = (
                  'capable of collaborative task management. ',
   url         => 'http://w2do.blackened.cz/',
   license     => 'GNU General Public License, version 3',
-  changed     => '2009-05-26',
+  changed     => '2009-06-28',
 );
 
 # General script settings:
