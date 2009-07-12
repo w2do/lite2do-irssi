@@ -1,4 +1,4 @@
-           lite2do-irssi - a lightweight todo manager for irssi
+           lite2do-irssi - a lightweight todo manager for Irssi
 
                              usage information
 
@@ -28,45 +28,45 @@ Unless set otherwise,  everyone is granted  an unlimited access to the task
 list from both public channel and private query using a command in the fol-
 lowing format:
 
-  :todo command [argument...]
+  :todo command [ARGUMENT...]
 
 Alternatively,  if you are running the script in your client,  you can also
 use an Irssi command:
 
-  /todo command [argument...]
+  /todo command [ARGUMENT...]
 
 Available commands are as follows:
 
-  list [@group] [text...]
-  ls [@group] [text...]
+  list [@GROUP] [TEXT...]
+  ls [@GROUP] [TEXT...]
     Display items in the task list.  Desired subset can be  easily selected
     giving a group name, text pattern,  or combination of both; listing all
     tasks is usually disabled to avoid unnecessary flood.
 
-  add [@group] text...
+  add [@GROUP] TEXT...
     Add new item to the task list.
 
-  change id text...
-  mv id text...
+  change ID TEXT...
+  mv ID TEXT...
     Change item with selected id in the task list.
 
-  change id @group
-  mv id @group
+  change ID @GROUP
+  mv ID @GROUP
     Change group the item with selected id belongs to.
 
-  finish id
-  fn id
+  finish ID
+  fn ID
     Mark item with selected id as finished.
 
-  revive id
-  re id
+  revive ID
+  re ID
     Mark item with selected id as unfinished.
 
-  remove id
-  rm id
+  remove ID
+  rm ID
     Remove item with selected id from the task list.
 
-  help [command]
+  help [COMMAND]
     Display usage information.  By default,  list of all supported commands
     is displayed. If  the command is supplied,  further  information on its
     usage are displayed instead.
@@ -86,7 +86,7 @@ advised.
 
 w2do is a simple to use yet efficient command-line todo manager  written in
 Perl 5 on which the lite2do-irssi is based,  and you can freely download it
-from <http://code.google.com/p/w2do/>.
+from <http://w2do.blackened.cz/>.
 
 
 4. Bugs
@@ -99,7 +99,7 @@ tact the author directly via e-mail.
 
 5. Copyright
 
-Copyright (C) 2008, 2009 Jaromir Hradilek
+Copyright (C) 2008, 2009 Jaromir Hradilek <jhradilek@gmail.com>
 
 This program is free software; see the source for copying conditions. It is
 distributed  in the hope that it will be useful,  but WITHOUT ANY WARRANTY;
