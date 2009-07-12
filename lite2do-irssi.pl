@@ -1,4 +1,4 @@
-# lite2do-irssi, a lightweight todo manager for irssi
+# lite2do-irssi, a lightweight todo manager for Irssi
 # Copyright (C) 2008, 2009 Jaromir Hradilek
 
 # This program is free software;  you can redistribute it  and/or modify it
@@ -21,7 +21,7 @@ use File::Copy;
 use File::Spec::Functions;
 
 # General script information:
-our $VERSION  = '1.1.1';
+our $VERSION  = '1.1.2';
 our %IRSSI    = (
   authors     => 'Jaromir Hradilek',
   contact     => 'jhradilek@gmail.com',
@@ -30,9 +30,9 @@ our %IRSSI    = (
                  'fully compatible with its save file format, it tries '.
                  'to provide a simple alternative for IRC network well '.
                  'capable of collaborative task management. ',
-  url         => 'http://w2do.blackened.cz/',
+  url         => 'http://w2do.blackened.cz/tags/lite2do-irssi/',
   license     => 'GNU General Public License, version 3',
-  changed     => '2009-06-28',
+  changed     => '2009-07-13',
 );
 
 # General script settings:
@@ -198,41 +198,42 @@ sub display_help {
   my $command = shift || '';
 
   # Parse command and return appropriate usage information:
-  if ($command =~ /list|ls/) {
+  if ($command =~ /^(list|ls)$/) {
     return "Displays items in the task list. " .
-           "Usage: $TRIGGER list [\@group] [text...]";
+           "Usage: $TRIGGER list [\@GROUP] [TEXT...]";
   }
-  elsif ($command =~ /add/) {
+  elsif ($command =~ /^add$/) {
     return "Adds new item to the task list. " .
-           "Usage: $TRIGGER add [\@group] text...";
+           "Usage: $TRIGGER add [\@GROUP] TEXT...";
   }
-  elsif ($command =~ /change/) {
+  elsif ($command =~ /^(change|mv)$/) {
     return "Changes selected item in the task list. " .
-           "Usage: $TRIGGER change id \@group|text...";
+           "Usage: $TRIGGER change ID \@GROUP|TEXT...";
   }
-  elsif ($command =~ /finish|fn/) {
+  elsif ($command =~ /^(finish|fn)$/) {
     return "Finishes selected item in the task list. " .
-           "Usage: $TRIGGER finish id";
+           "Usage: $TRIGGER finish ID";
   }
-  elsif ($command =~ /revive|re/) {
+  elsif ($command =~ /^(revive|re)$/) {
     return "Revives selected item in the task list. " .
-           "Usage: $TRIGGER revive id";
+           "Usage: $TRIGGER revive ID";
   }
-  elsif ($command =~ /remove|rm/) {
+  elsif ($command =~ /^(remove|rm)$/) {
     return "Removes selected item from the task list. " .
-           "Usage: $TRIGGER remove id";
+           "Usage: $TRIGGER remove ID";
   }
-  elsif ($command =~ /version/) {
+  elsif ($command =~ /^version$/) {
     return "Displays version information. " .
            "Usage: $TRIGGER version";
   }
-  elsif ($command =~ /help/) {
+  elsif ($command =~ /^help$/) {
     return "Displays usage information. " .
-           "Usage: $TRIGGER help [command]";
+           "Usage: $TRIGGER help [COMMAND]";
   }
   else {
     return "Allowed commands: list, add, change, finish, revive, remove, ".
-           "version. Try `$TRIGGER help command' for more information.";
+           "version, help. Try `$TRIGGER help COMMAND' for more ".
+           "information.";
   }
 }
 
@@ -513,8 +514,8 @@ sub run_command {
   }
   else {
     # Report invalid command:
-    return "Invalid command or argument.\n" .
-           "Try `$TRIGGER help' for more information.";
+    return "Invalid command or argument. Try `$TRIGGER help' ".
+           "for more information.";
   }
 }
 
@@ -586,7 +587,7 @@ Irssi::command_bind('todo', 'cmd_todo');
 
 =head1 NAME
 
-lite2do-irssi - a lightweight todo manager for irssi
+lite2do-irssi - a lightweight todo manager for Irssi
 
 =head1 SYNOPSIS
 
@@ -600,7 +601,7 @@ or anywhere in Irssi:
 
 =head1 DESCRIPTION
 
-B<lite2do-irssi> is a lightweight todo manager for Irssi written in Perl 5.
+B<lite2do-irssi> is a lightweight todo manager for Irssi written in Perl.
 Being based on C<w2do> and fully compatible with its save file format, it
 tries to provide a simple alternative for IRC network capable of
 collaborative task management.
