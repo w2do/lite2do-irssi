@@ -519,23 +519,23 @@ sub run_command {
     # Add new task to default group:
     return add_task($1);
   }
-  elsif ($command =~ /^(change|mv)\s+(\d+)\s+@(\S+)\s*$/) {
+  elsif ($command =~ /^(change|mv)\s+%?(\d+)\s+@(\S+)\s*$/) {
     # Change selected task group:
     return change_task($2, $3, 1);
   }
-  elsif ($command =~ /^(change|mv)\s+(\d+)\s+([^@\s].*)/) {
+  elsif ($command =~ /^(change|mv)\s+%?(\d+)\s+([^@\s].*)/) {
     # Change selected task:
     return change_task($2, $3);
   }
-  elsif ($command =~ /^(finish|fn)\s+(\d+)/) {
+  elsif ($command =~ /^(finish|fn)\s+%?(\d+)/) {
     # Mark selected task as finished:
     return finish_task($2);
   }
-  elsif ($command =~ /^(revive|re)\s+(\d+)/) {
+  elsif ($command =~ /^(revive|re)\s+%?(\d+)/) {
     # Mark selected task as unfinished:
     return revive_task($2);
   }
-  elsif ($command =~ /^(remove|rm)\s+(\d+)/) {
+  elsif ($command =~ /^(remove|rm)\s+%?(\d+)/) {
     # Remove selected task:
     return remove_task($2);
   }
