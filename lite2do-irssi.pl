@@ -200,7 +200,7 @@ sub display_help {
   # Parse command and return appropriate usage information:
   if ($command =~ /^(list|ls)$/) {
     return "Displays items in the task list. " .
-           "Usage: $TRIGGER list [\@GROUP] [TEXT...]";
+           "Usage: $TRIGGER list [\@GROUP|%ID] [TEXT...]";
   }
   elsif ($command =~ /^add$/) {
     return "Adds new item to the task list. " .
@@ -244,11 +244,11 @@ sub display_version {
 
 # List items in the task list:
 sub list_tasks {
-  my ($group, $task) = @_;
+  my ($group, $task, $id) = @_;
   my (@selected, $state, $tasks);
 
   # Load matching tasks:
-  load_selection(\@selected, undef, undef, $group, $task);
+  load_selection(\@selected, undef, $id, $group, $task);
 
   # Check whether the list is not empty:
   if (@selected) {
@@ -468,7 +468,11 @@ sub run_command {
     # List tasks in the selected group:
     return list_tasks($2, $3);
   }
-  elsif ($command =~ /^(list|ls)\s+([^@\s].*)$/) {
+  elsif ($command =~ /^(list|ls)\s+%(\d+)/) {
+    # List task with selected ID:
+    return list_tasks(undef, undef, $2);
+  }
+  elsif ($command =~ /^(list|ls)\s+([^@^%\s].*)$/) {
     # List tasks matching given pattern:
     return list_tasks(undef, $2);
   }
@@ -617,6 +621,12 @@ collaborative task management.
 Display items in the task list. Desired subset can be easily selected
 giving a I<group> name, I<text> pattern, or combination of both; listing
 all tasks is usually disabled to avoid unnecessary flood.
+
+=item B<list> %I<id>
+
+=item B<ls> %I<id>
+
+Display task with selected I<id>.
 
 =item B<add> [I<@group>] I<text>...
 

@@ -28,12 +28,12 @@ Unless set otherwise,  everyone is granted  an unlimited access to the task
 list from both public channel and private query using a command in the fol-
 lowing format:
 
-  :todo command [ARGUMENT...]
+  :todo COMMAND [ARGUMENT...]
 
 Alternatively,  if you are running the script in your client,  you can also
 use an Irssi command:
 
-  /todo command [ARGUMENT...]
+  /todo COMMAND [ARGUMENT...]
 
 Available commands are as follows:
 
@@ -42,6 +42,10 @@ Available commands are as follows:
     Display items in the task list.  Desired subset can be  easily selected
     giving a group name, text pattern,  or combination of both; listing all
     tasks is usually disabled to avoid unnecessary flood.
+
+  list %ID
+  ls %ID
+    Display task with selected id.
 
   add [@GROUP] TEXT...
     Add new item to the task list.
