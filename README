@@ -70,6 +70,10 @@ Available commands are as follows:
   rm ID
     Remove item with selected id from the task list.
 
+  groups
+    Display list of groups in the task list  along with the number of tasks
+    that belong to them.
+
   help [COMMAND]
     Display usage information.  By default,  list of all supported commands
     is displayed. If  the command is supplied,  further  information on its

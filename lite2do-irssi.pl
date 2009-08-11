@@ -133,7 +133,7 @@ sub add_data {
   }
 }
 
-# Get list of all groups:
+# Get hash of all groups:
 sub get_groups {
   my %groups = ();
 
@@ -142,7 +142,21 @@ sub get_groups {
 
     # Build the list of used groups:
     while (my $line = <SAVEFILE>) {
-      $groups{lc($1)} = 1 if ($line =~ /^([^:]*):/);
+
+      # Parse the task record:
+      if ($line =~ /^([^:]*):/) {
+        my $group = lc($1);
+
+        # Check whether the group is already added:
+        if ($groups{$group}) {
+          # Increment the counter:
+          $groups{$group} += 1;
+        }
+        else {
+          # Initialize the counter:
+          $groups{$group}  = 1;
+        }
+      }
     }
 
     # Close the save file:
@@ -150,7 +164,7 @@ sub get_groups {
   }
 
   # Return the result:
-  return keys(%groups);
+  return %groups;
 }
 
 # Choose first available ID:
@@ -222,6 +236,10 @@ sub display_help {
     return "Removes selected item from the task list. " .
            "Usage: $TRIGGER remove ID";
   }
+  elsif ($command =~ /^groups$/) {
+    return "Displays groups in the task list. " .
+           "Usage: $TRIGGER groups";
+  }
   elsif ($command =~ /^version$/) {
     return "Displays version information. " .
            "Usage: $TRIGGER version";
@@ -232,7 +250,7 @@ sub display_help {
   }
   else {
     return "Allowed commands: list, add, change, finish, revive, remove, ".
-           "version, help. Try `$TRIGGER help COMMAND' for more ".
+           "groups, version, help. Try `$TRIGGER help COMMAND' for more " .
            "information.";
   }
 }
@@ -280,6 +298,23 @@ sub list_tasks {
 
     # Return the result:
     return $tasks;
+  }
+  else {
+    # Report empty list:
+    return "No matching task found.";
+  }
+}
+
+# List groups in the task list:
+sub list_groups {
+  # Get list of all groups:
+  my %groups = get_groups();
+
+  # Make sure the task list is not empty:
+  if (scalar(keys %groups)) {
+    # Return the list of groups:
+    return join(', ', map { "$_ (" . $groups{$_} . ")" }
+                      sort keys(%groups));
   }
   else {
     # Report empty list:
@@ -446,11 +481,11 @@ sub run_command {
     unless ($LISTALL) {
 
       # Get list of all groups:
-      my $groups = join(', ', get_groups());
+      my %list   = get_groups();
+      my $groups = join(', ', sort(keys %list));
 
       # Make sure the task list is not empty:
       if ($groups) {
-
         # Ask user to specify the group:
         return "Please specify one of the following groups: $groups.";
       }
@@ -503,6 +538,10 @@ sub run_command {
   elsif ($command =~ /^(remove|rm)\s+(\d+)/) {
     # Remove selected task:
     return remove_task($2);
+  }
+  elsif ($command =~ /^groups\s*$/) {
+    # Display groups in the task list:
+    return list_groups();
   }
   elsif ($command =~ /^version\s*$/) {
     # Display version information:
@@ -661,6 +700,11 @@ Mark item with selected I<id> as unfinished.
 =item B<rm> I<id>
 
 Remove item with selected I<id> from the task list.
+
+=item B<groups>
+
+Display list of groups in the task list along with the number of tasks that
+belong to them.
 
 =item B<help> [I<command>]
 
