@@ -236,7 +236,7 @@ sub display_help {
     return "Removes selected item from the task list. " .
            "Usage: $TRIGGER remove ID";
   }
-  elsif ($command =~ /^groups$/) {
+  elsif ($command =~ /^(groups|gr)$/) {
     return "Displays groups in the task list. " .
            "Usage: $TRIGGER groups";
   }
@@ -539,7 +539,7 @@ sub run_command {
     # Remove selected task:
     return remove_task($2);
   }
-  elsif ($command =~ /^groups\s*$/) {
+  elsif ($command =~ /^(groups|gr)\s*$/) {
     # Display groups in the task list:
     return list_groups();
   }
@@ -702,6 +702,8 @@ Mark item with selected I<id> as unfinished.
 Remove item with selected I<id> from the task list.
 
 =item B<groups>
+
+=item B<gr>
 
 Display list of groups in the task list along with the number of tasks that
 belong to them.
